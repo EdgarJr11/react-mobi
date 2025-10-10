@@ -1,31 +1,7 @@
 import React from 'react'
-import { useState } from 'react'
-const Home = () => {
 
-const listagem = async () =>{
-
-const [list, setList] = useState()
-  
-  try{
-    const list = await api.get('https://apiteste.mobieduca.me/api/escolas')
-    listagem()
-
-  }
-  catch{
-
-  }
-}
-
+export const Home = () => {
   return (
-    <div>
-      <form>
-        <input type="text" />
-        <button>
-          Buscar
-        </button>
-      </form>
-    </div>
+    <div>Home</div>
   )
 }
-
-export default Home
