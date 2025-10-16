@@ -8,18 +8,24 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const fazerLogin = async () => {
+    setLoading(true)
+
     try {
       const response = await api.post("/api/login/run", {
         "email":username,
         "senha":password ,
       });
-      navigate('/Home')
+      navigate('/Escolas')
       
     } catch (error) {
       alert('Erro de login')
+    }finally
+    {
+        setLoading(false)
     }
   };
 
@@ -33,6 +39,8 @@ const Login = () => {
             type="email"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            disabled={loading}
+
           />
         </div>
 
@@ -43,6 +51,7 @@ const Login = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
           />
         </div>
 
@@ -50,9 +59,10 @@ const Login = () => {
           <Button 
             variant="outlined" 
             onClick={fazerLogin} 
+            disabled={loading}
             className='btn-login'
           >
-            ENTRAR
+            {loading ? 'Carregando...' : 'Entrar'}
           </Button>
         </div>
 

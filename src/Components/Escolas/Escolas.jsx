@@ -1,10 +1,12 @@
 import React from 'react'
 import { useState } from 'react'
-const Home = () => {
+import './Escolas.css'
+
+const [list, setList] = useState()
+const Escolas = () => {
 
 const listagem = async () =>{
 
-const [list, setList] = useState()
   
   try{
     const list = await api.get('https://apiteste.mobieduca.me/api/escolas')
@@ -28,4 +30,4 @@ const [list, setList] = useState()
   )
 }
 
-export default Home
+export default Escolas
