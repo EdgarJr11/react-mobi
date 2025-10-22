@@ -1,33 +1,90 @@
-import React from 'react'
-import { useState } from 'react'
-import './Escolas.css'
+import React, { useState, useEffect } from 'react';
+import api from '../../Routes/api';
+import './Escolas.css';
+import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-const [list, setList] = useState()
+
 const Escolas = () => {
+  const [todasEscolas, setTodasEscolas] = useState([]);
+  const [cidades, setCidades] = useState([]);
+  const [nomeBusca, setNomeBusca] = useState("");
+  const [cidadeSelecionada, setCidadeSelecionada] = useState("");
+  const navigate = useNavigate()
 
-const listagem = async () =>{
+  const buscarEscolas = async () => {
+    try {
+      const response = await api.get('https://apiteste.mobieduca.me/api/escolas');
+      const dados = response.data.data || response.data.escolas || response.data;
 
+      console.log(response.data)
+      const cidadesUnicas = [...new Set(dados.map(escola => escola.cidade))];
+      setCidades(cidadesUnicas.sort());
+    } catch (erro) {
+      console.error("Erro ao buscar escolas:", erro);
+    }
+  };
+const cadastroEscolas = () =>{
+    navigate('/Cadastro')
+  }
   
-  try{
-    const list = await api.get('https://apiteste.mobieduca.me/api/escolas')
-    listagem()
 
-  }
-  catch{
+  useEffect(() => {
+    buscarEscolas();
+  }, []);
 
-  }
-}
+
 
   return (
-    <div>
-      <form>
-        <input type="text" />
-        <button>
-          Buscar
-        </button>
-      </form>
-    </div>
-  )
-}
 
-export default Escolas
+
+    <div className='container'>
+      <div className='box-escolas'>
+
+        <button onClick={cadastroEscolas}> 
+            CRIAR NOVA ESCOLA
+        </button>
+        <h1>Listagem de Escolas</h1>
+
+        <div className="barra-filtros">
+          <div className="input">
+            <TextField
+              label="Pesquisar por nome"
+              variant="outlined"
+              value={nomeBusca}
+              onChange={(e) => setNomeBusca(e.target.value)}
+              fullWidth
+            />
+          </div>
+
+          <div className="input">
+            <FormControl fullWidth>
+              <InputLabel id="filtro-cidade-label">Filtrar por Cidade</InputLabel>
+              <Select
+                labelId="filtro-cidade-label"
+                label="Filtrar por Cidade"
+                value={cidadeSelecionada}
+                onChange={(e) => setCidadeSelecionada(e.target.value)}
+              >
+                <MenuItem value="">
+                  <em>Todas as Cidades</em>
+                </MenuItem>
+                {cidades.map(cidade => (
+                  <MenuItem key={cidade} value={cidade}>
+                    {cidade}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+        </div>
+
+        <button onClick={buscarEscolas}>
+          BUSCAR
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Escolas;

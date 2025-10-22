@@ -19,8 +19,18 @@ const Login = () => {
         "email":username,
         "senha":password ,
       });
+    
+      const token = response.data.token
+      if(token){
+        localStorage.setItem('authToken', token)
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        navigate('/Escolas')
+      }
+      else{
+        alert('')
+      }
+
       navigate('/Escolas')
-      
     } catch (error) {
       alert('Erro de login')
     }finally
