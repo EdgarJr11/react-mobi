@@ -11,8 +11,10 @@ const Escolas = () => {
   const [nomeBusca, setNomeBusca] = useState("");
   const [cidadeSelecionada, setCidadeSelecionada] = useState("");
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   const buscarEscolas = async () => {
+    setLoading(true)
     try {
       const response = await api.get('https://apiteste.mobieduca.me/api/escolas');
       const dados = response.data.data || response.data.escolas || response.data;
@@ -22,21 +24,21 @@ const Escolas = () => {
       setCidades(cidadesUnicas.sort());
     } catch (erro) {
       console.error("Erro ao buscar escolas:", erro);
+    }finally
+    {
+      setLoading(false)
     }
+
   };
 const cadastroEscolas = () =>{
     navigate('/Cadastro')
-  }
-  
+  } 
 
-  useEffect(() => {
-    buscarEscolas();
-  }, []);
-
-
+    //useEffect(() => {
+   // buscarEscolas();
+  //}, []);
 
   return (
-
 
     <div className='container'>
       <div className='box-escolas'>
@@ -44,7 +46,7 @@ const cadastroEscolas = () =>{
         <button onClick={cadastroEscolas}> 
             CRIAR NOVA ESCOLA
         </button>
-        <h1>Listagem de Escolas</h1>
+        <h1>Listagem de Escolas </h1>
 
         <div className="barra-filtros">
           <div className="input">
@@ -79,8 +81,8 @@ const cadastroEscolas = () =>{
           </div>
         </div>
 
-        <button onClick={buscarEscolas}>
-          BUSCAR
+        <button onClick={buscarEscolas}  disabled={loading}>
+          {loading ? 'Buscando...': 'Buscar'}
         </button>
       </div>
     </div>
