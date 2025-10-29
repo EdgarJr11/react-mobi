@@ -103,7 +103,7 @@ const Cadastrar = () => {
             required
           >
             <MenuItem value="M">Manhã</MenuItem>
-            <MenuItem value="T">Tarde</MenuItem>
+            <MenuItem value="T">Tarde</MenuItem> 
             <MenuItem value="N">Noite</MenuItem>
           </TextField>
         </div>

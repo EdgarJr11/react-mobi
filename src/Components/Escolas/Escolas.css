@@ -1,12 +1,69 @@
-*{
-    margin:0px;
-    padding: 0%;
-
-}
 .container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;  
+  padding: 20px;
+}
 
+.box-escolas {
+  width: 80%;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.botoes {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-nova, .btn-buscar {
+  background-color: #1976d2;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-nova:hover, .btn-buscar:hover {
+  background-color: #125ea8;
+}
+
+.barra-filtros {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.input {
+  flex: 1;
+}
+
+.lista-escolas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 15px;
+}
+
+.card-escola {
+  background: #f6f6f6;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: 0.2s;
+}
+
+.card-escola:hover {
+  background: #e8f1ff;
+  transform: scale(1.02);
 }
