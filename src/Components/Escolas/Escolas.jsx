@@ -20,14 +20,30 @@ const Escolas = () => {
     setLoading(true);
     try {
       const response = await api.get('https://apiteste.mobieduca.me/api/escolas');
-      const dados = response.data.data || response.data.escolas || response.data;
+      const dados =
+        response.data?.data ||
+        response.data?.escolas ||
+        response.data ||
+        [];
 
-      setTodasEscolas(dados);
+      const listaEscolas = Array.isArray(dados) ? dados : [];
+      setTodasEscolas(listaEscolas);
 
-      const cidadesUnicas = [...new Set(dados.map(escola => escola.cidade))];
+      const cidadesUnicas = [
+        ...new Set(
+          listaEscolas.map((escola) =>
+            typeof escola.cidade === 'object'
+              ? escola.cidade.descricao
+              : escola.cidade
+          )
+        ),
+      ].filter(Boolean);
+
       setCidades(cidadesUnicas.sort());
     } catch (erro) {
-      console.error("Erro ao buscar escolas:", erro);
+      console.error('Erro ao buscar escolas:', erro);
+      setTodasEscolas([]);
+      setCidades([]);
     } finally {
       setLoading(false);
     }
@@ -37,50 +53,53 @@ const Escolas = () => {
     navigate('/Cadastro');
   };
 
-    const escolasFiltradas = todasEscolas.filter((escola) => {
-    const matchNome = escola.nome.toLowerCase().includes(nomeBusca.toLowerCase());
-    const matchCidade = cidadeSelecionada ? escola.cidade === cidadeSelecionada : true;
+  const escolasFiltradas = (todasEscolas || []).filter((escola) => {
+    const nome = escola.nome?.toLowerCase() || '';
+    const cidade =
+      typeof escola.cidade === 'object'
+        ? escola.cidade.descricao
+        : escola.cidade;
+    const matchNome = nome.includes(nomeBusca.toLowerCase());
+    const matchCidade = cidadeSelecionada ? cidade === cidadeSelecionada : true;
     return matchNome && matchCidade;
   });
 
   return (
     <div className='container'>
       <div className='box-escolas'>
-        <div className="top-bar">
+        <div className='top-bar'>
           <h1>Listagem de Escolas</h1>
-          <div className="botoes">
-            <button className="btn-nova" onClick={cadastroEscolas}>Criar Nova Escola</button>
-            <button className="btn-buscar" onClick={buscarEscolas} disabled={loading}>
-              {loading ? <CircularProgress size={20} color="inherit" /> : 'Atualizar Lista'}
+          <div className='botoes'>
+            <button className='btn-nova' onClick={cadastroEscolas}>
+              Criar Nova Escola
             </button>
           </div>
         </div>
 
-        <div className="barra-filtros">
-          <div className="input">
+        <div className='barra-filtros'>
+          <div className='input'>
             <TextField
-              label="Pesquisar por nome"
-              variant="outlined"
+              label='Pesquisar por nome'
+              variant='outlined'
               value={nomeBusca}
               onChange={(e) => setNomeBusca(e.target.value)}
               fullWidth
             />
           </div>
 
-          <div className="input">
+          <div className='input'>
             <FormControl fullWidth>
-              <InputLabel id="filtro-cidade-label">Filtrar por Cidade</InputLabel>
+              <InputLabel id='filtro-cidade-label'>Filtrar por Cidade</InputLabel>
               <Select
-                labelId="filtro-cidade-label"
-                label="Filtrar por Cidade"
+                labelId='filtro-cidade-label'
+                label='Filtrar por Cidade'
                 value={cidadeSelecionada}
                 onChange={(e) => setCidadeSelecionada(e.target.value)}
               >
-
-                <MenuItem value="">
+                <MenuItem value=''>
                   <em>Todas as Cidades</em>
                 </MenuItem>
-                {cidades.map(cidade => (
+                {cidades.map((cidade) => (
                   <MenuItem key={cidade} value={cidade}>
                     {cidade}
                   </MenuItem>
@@ -90,15 +109,25 @@ const Escolas = () => {
           </div>
         </div>
 
-        <div className="lista-escolas">
+        <div className='lista-escolas'>
           {loading ? (
-            <p>Carregando escolas...</p>
+            <div className='loading'>
+              <CircularProgress />
+              <p>Carregando escolas...</p>
+            </div>
           ) : escolasFiltradas.length > 0 ? (
             escolasFiltradas.map((escola) => (
-              <div key={escola.id} className="card-escola">
+              <div key={escola.id} className='card-escola'>
                 <h3>{escola.nome}</h3>
-                <p><strong>Cidade:</strong> {escola.cidade?.descricao || 'Não informado'}</p>
-                <p><strong>Diretor:</strong> {escola.diretor}</p>
+                <p>
+                  <strong>Cidade:</strong>{' '}
+                  {typeof escola.cidade === 'object'
+                    ? escola.cidade.descricao
+                    : escola.cidade || 'Não informado'}
+                </p>
+                <p>
+                  <strong>Diretor:</strong> {escola.diretor || 'Não informado'}
+                </p>
               </div>
             ))
           ) : (
